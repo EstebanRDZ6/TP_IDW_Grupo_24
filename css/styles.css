@@ -1,0 +1,187 @@
+/* VETERINARIA LA MARY Estilos generales del proyecto*/
+
+:root {
+  --color-primary: #ff7a1a;
+  --color-primary-dark: #e96300;
+  --color-primary-soft: #fff1e6;
+  --color-secondary: #ffb066;
+  --color-background: #fffaf6;
+  --color-surface: #ffffff;
+  --color-text: #1f2937;
+  --color-text-soft: #5f6b7a;
+  --color-white: #ffffff;
+  --color-danger: #dc3545;
+  --color-success: #198754;
+  --color-warning: #ffc107;
+
+  --border-radius: 14px;
+  --box-shadow: 0 12px 30px rgba(255, 122, 26, 0.12);
+  --box-shadow-soft: 0 8px 20px rgba(17, 24, 39, 0.06);
+}
+
+/* GENERAL */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: linear-gradient(180deg, var(--color-background) 0%, #fff 100%);
+  color: var(--color-text);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+  text-decoration: none;
+}
+
+::selection {
+  background: rgba(255, 122, 26, 0.2);
+}
+
+/* NAVBAR */
+
+.navbar {
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(10px);
+  box-shadow: var(--box-shadow-soft);
+}
+
+.navbar-brand {
+  color: var(--color-primary) !important;
+  letter-spacing: 0.02em;
+}
+
+.nav-link {
+  color: var(--color-text);
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--color-primary);
+}
+
+/*BOTONES */
+
+.btn-primary {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  );
+  border: none;
+  box-shadow: 0 10px 20px rgba(255, 122, 26, 0.2);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 100%
+  );
+  border: none;
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(233, 99, 0, 0.25);
+}
+
+/*HERO */
+
+.hero-section {
+  background: radial-gradient(circle at top, #fff7f0 0%, #fff 60%);
+}
+
+.hero-placeholder {
+  width: 250px;
+  height: 250px;
+  margin: auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-soft) 0%,
+    #ffe9d6 100%
+  );
+  border-radius: 50%;
+  box-shadow: var(--box-shadow);
+
+  color: var(--color-primary);
+  font-size: 6rem;
+}
+
+/* CARDS*/
+
+.card-custom {
+  background-color: var(--color-white);
+  border: 1px solid rgba(255, 122, 26, 0.08);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-soft);
+}
+
+/* TABLAS */
+
+.table-container {
+  background-color: var(--color-white);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  overflow-x: auto;
+}
+
+/*FORMULARIOS*/
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 0.2rem rgba(255, 122, 26, 0.15);
+}
+
+/*FOOTER*/
+
+.footer {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-dark) 0%,
+    var(--color-primary) 100%
+  );
+  color: var(--color-white);
+}
+
+/*ADMIN DASHBOARD*/
+
+.admin-sidebar {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    var(--color-primary-dark) 0%,
+    #d65a00 100%
+  );
+  color: var(--color-white);
+}
+
+.admin-sidebar a {
+  color: var(--color-white);
+}
+
+.admin-sidebar a:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+/*Responsive Design*/
+
+@media (max-width: 768px) {
+  .hero-placeholder {
+    width: 180px;
+    height: 180px;
+    font-size: 4rem;
+  }
+
+  h1 {
+    font-size: 2.2rem;
+  }
+}
