@@ -1,0 +1,13 @@
+{
+  "devDependencies": {
+    "vite": "^8.2.2"
+  },
+  "dependencies": {
+    "@rolldown/binding-wasm32-wasi": "^1.2.6"
+  },
+  "scripts": {
+  "dev": "vite --host",
+  "build": "vite build",
+  "preview": "vite preview"
+  }
+}
