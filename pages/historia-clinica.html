@@ -100,13 +100,6 @@
             <label for="filtroMascotaHistoria" class="form-label">
               Ver historial de:
             </label>
-            <!--
-              TODO (encargado/a de Historia Clínica): completar este
-              <select> con obtenerMascotas() y, al cambiar, filtrar la
-              tabla para mostrar solo el historial de esa mascota
-              (requisito: "Visualizar el historial completo de una
-              mascota").
-            -->
             <select id="filtroMascotaHistoria" class="form-select w-auto">
               <option value="">Todas las mascotas</option>
             </select>
@@ -127,17 +120,6 @@
                 </tr>
               </thead>
 
-              <!--
-                TODO (encargado/a de Historia Clínica): en
-                js/historia-clinica.js implementar
-                renderizarTablaHistorias() que recorra
-                obtenerHistoriasClinicas() (filtradas si hay mascota
-                seleccionada), resuelva mascota/veterinario con
-                buscarMascotaPorId() / buscarVeterinarioPorId() e inserte
-                las filas. Al guardar una entrada nueva, además actualizar
-                el peso actual de la mascota (guardarMascotas) para
-                reflejar el peso histórico más reciente.
-              -->
               <tbody id="tablaHistorias">
                 <tr>
                   <td colspan="8" class="text-center text-muted">
@@ -170,10 +152,6 @@
                 <label for="mascotaHistoria" class="form-label">
                   Mascota
                 </label>
-                <!--
-                  TODO (encargado/a de Historia Clínica): completar con
-                  obtenerMascotas().
-                -->
                 <select id="mascotaHistoria" class="form-select" required>
                   <option value="">Seleccionar mascota...</option>
                 </select>
@@ -183,10 +161,6 @@
                 <label for="veterinarioHistoria" class="form-label">
                   Veterinario
                 </label>
-                <!--
-                  TODO (encargado/a de Historia Clínica): completar con
-                  obtenerVeterinarios().
-                -->
                 <select id="veterinarioHistoria" class="form-select" required>
                   <option value="">Seleccionar veterinario...</option>
                 </select>

@@ -1,84 +1,143 @@
-// ============================================================
-// MASCOTAS
-// ============================================================
+const MAX_IMAGE_SIZE = 2 * 1024 * 1024;
+const ALLOWED_IMAGE_TYPES = new Set([
+  "image/jpeg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+]);
 
-// Variable para guardar temporalmente la imagen en Base64
 let imagenBase64 = "";
+let lecturaImagenPendiente = null;
 
+function esImagenBase64Valida(imagen) {
+  return /^data:image\/(jpeg|png|gif|webp);base64,[A-Za-z0-9+/]+=*$/.test(
+    imagen,
+  );
+}
 
-// ============================================================
-// Renderizar tabla de mascotas
-// ============================================================
+function crearIdMascotaUnico(mascotas) {
+  let idMascota = generarUID();
+
+  while (mascotas.some((mascota) => mascota.idMascota === idMascota)) {
+    idMascota = generarUID();
+  }
+
+  return idMascota;
+}
+
+function limpiarVistaPrevia() {
+  const preview = document.getElementById("previewImagenMascota");
+
+  if (!preview) {
+    return;
+  }
+
+  preview.removeAttribute("src");
+  preview.style.display = "none";
+}
+
+function actualizarVistaPrevia(imagen) {
+  const preview = document.getElementById("previewImagenMascota");
+
+  if (!preview) {
+    return;
+  }
+
+  if (!imagen) {
+    limpiarVistaPrevia();
+    return;
+  }
+
+  preview.src = imagen;
+  preview.style.display = "block";
+}
 
 function renderizarTablaMascotas() {
   const mascotas = obtenerMascotas();
   const tabla = document.getElementById("tablaMascotas");
 
-  if (mascotas.length === 0) {
-    tabla.innerHTML = `
-      <tr>
-        <td colspan="7" class="text-center text-muted">
-          No hay mascotas registradas.
-        </td>
-      </tr>
-    `;
-
+  if (!tabla) {
     return;
   }
 
-  tabla.innerHTML = "";
+  tabla.replaceChildren();
 
-  mascotas.forEach(function (mascota) {
-    const foto = mascota.imagenMascota
-      ? `<img src="${mascota.imagenMascota}" 
-             alt="Foto de ${escaparHTML(mascota.nombreMascota)}"
-             width="60"
-             height="60"
-             class="rounded-circle object-fit-cover">`
-      : `<i class="bi bi-image fs-2 text-muted"></i>`;
+  if (mascotas.length === 0) {
+    const fila = document.createElement("tr");
+    const celda = document.createElement("td");
 
-    const fila = `
-      <tr>
-        <td>${foto}</td>
+    celda.colSpan = 7;
+    celda.className = "text-center text-muted";
+    celda.textContent = "No hay mascotas registradas.";
+    fila.append(celda);
+    tabla.append(fila);
+    return;
+  }
 
-        <td>${escaparHTML(mascota.nombreMascota)}</td>
+  mascotas.forEach((mascota) => {
+    const fila = document.createElement("tr");
+    const fotoCelda = document.createElement("td");
 
-        <td>${escaparHTML(mascota.nombreDuenio)}</td>
+    if (
+      typeof mascota.imagenMascota === "string" &&
+      esImagenBase64Valida(mascota.imagenMascota)
+    ) {
+      const imagen = document.createElement("img");
 
-        <td>${escaparHTML(mascota.color)}</td>
+      imagen.src = mascota.imagenMascota;
+      imagen.alt = `Foto de ${mascota.nombreMascota || "mascota"}`;
+      imagen.width = 60;
+      imagen.height = 60;
+      imagen.className = "rounded-circle object-fit-cover";
+      fotoCelda.append(imagen);
+    } else {
+      const icono = document.createElement("i");
 
-        <td>${mascota.edad}</td>
+      icono.className = "bi bi-image fs-2 text-muted";
+      fotoCelda.append(icono);
+    }
 
-        <td>${mascota.peso} kg</td>
+    const nombreCelda = document.createElement("td");
+    const duenioCelda = document.createElement("td");
+    const colorCelda = document.createElement("td");
+    const edadCelda = document.createElement("td");
+    const pesoCelda = document.createElement("td");
+    const accionesCelda = document.createElement("td");
+    const editar = document.createElement("button");
+    const eliminar = document.createElement("button");
 
-        <td class="text-end">
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-primary me-1"
-            onclick="editarMascota('${mascota.idMascota}')">
-            <i class="bi bi-pencil"></i>
-            Editar
-          </button>
+    nombreCelda.textContent = mascota.nombreMascota;
+    duenioCelda.textContent = mascota.nombreDuenio;
+    colorCelda.textContent = mascota.color;
+    edadCelda.textContent = String(mascota.edad);
+    pesoCelda.textContent = `${mascota.peso} kg`;
+    accionesCelda.className = "text-end";
 
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-danger"
-            onclick="eliminarMascotaUI('${mascota.idMascota}')">
-            <i class="bi bi-trash"></i>
-            Eliminar
-          </button>
-        </td>
-      </tr>
-    `;
+    editar.type = "button";
+    editar.className = "btn btn-sm btn-outline-primary me-1";
+    editar.dataset.accion = "editar";
+    editar.dataset.idMascota = mascota.idMascota;
+    editar.innerHTML = '<i class="bi bi-pencil"></i> Editar';
 
-    tabla.innerHTML += fila;
+    eliminar.type = "button";
+    eliminar.className = "btn btn-sm btn-outline-danger";
+    eliminar.dataset.accion = "eliminar";
+    eliminar.dataset.idMascota = mascota.idMascota;
+    eliminar.innerHTML = '<i class="bi bi-trash"></i> Eliminar';
+
+    accionesCelda.append(editar, eliminar);
+    fila.append(
+      fotoCelda,
+      nombreCelda,
+      duenioCelda,
+      colorCelda,
+      edadCelda,
+      pesoCelda,
+      accionesCelda,
+    );
+    tabla.append(fila);
   });
 }
-
-
-// ============================================================
-// Editar mascota
-// ============================================================
 
 function editarMascota(idMascota) {
   const mascota = buscarMascotaPorId(idMascota);
@@ -94,30 +153,17 @@ function editarMascota(idMascota) {
   document.getElementById("color").value = mascota.color;
   document.getElementById("edad").value = mascota.edad;
   document.getElementById("peso").value = mascota.peso;
+  document.getElementById("imagenMascota").value = "";
 
-  imagenBase64 = mascota.imagenMascota || "";
+  imagenBase64 = esImagenBase64Valida(mascota.imagenMascota)
+    ? mascota.imagenMascota
+    : "";
+  actualizarVistaPrevia(imagenBase64);
 
-  const preview = document.getElementById("previewImagenMascota");
-
-  if (mascota.imagenMascota) {
-    preview.src = mascota.imagenMascota;
-    preview.style.display = "block";
-  } else {
-    preview.src = "";
-    preview.style.display = "none";
-  }
-
-  const modalElement = document.getElementById("modalMascota");
-
-  const modal = bootstrap.Modal.getOrCreateInstance(modalElement);
-
-  modal.show();
+  bootstrap.Modal.getOrCreateInstance(
+    document.getElementById("modalMascota"),
+  ).show();
 }
-
-
-// ============================================================
-// Eliminar mascota
-// ============================================================
 
 function eliminarMascotaUI(idMascota) {
   if (!confirmarAccion("¿Está seguro de eliminar esta mascota?")) {
@@ -125,195 +171,178 @@ function eliminarMascotaUI(idMascota) {
   }
 
   eliminarMascota(idMascota);
-
   renderizarTablaMascotas();
-
   mostrarAlerta("Mascota eliminada correctamente.", "success");
 }
 
+function prepararNuevaMascota() {
+  document.getElementById("formMascota").reset();
+  document.getElementById("idMascota").value = "";
+  imagenBase64 = "";
+  lecturaImagenPendiente = null;
+  limpiarVistaPrevia();
+}
 
-// ============================================================
-// Inicialización
-// ============================================================
+function leerImagenComoBase64(archivo) {
+  lecturaImagenPendiente = new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.addEventListener("load", () => resolve(reader.result));
+    reader.addEventListener("error", () =>
+      reject(new Error("No se pudo leer la imagen.")),
+    );
+    reader.readAsDataURL(archivo);
+  });
+
+  return lecturaImagenPendiente;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
+  const formulario = document.getElementById("formMascota");
+  const inputImagen = document.getElementById("imagenMascota");
+  const tabla = document.getElementById("tablaMascotas");
+  const botonNuevaMascota = document.getElementById("btnNuevaMascota");
+  const modalMascota = document.getElementById("modalMascota");
 
-  // ==========================================================
-  // Convertir imagen a Base64 - La implementación se encuentra dentro de DOMContentLoaded.
-  // ==========================================================
+  botonNuevaMascota.addEventListener("click", prepararNuevaMascota);
 
-  document
-    .getElementById("imagenMascota")
-    .addEventListener("change", function (event) {
-      const archivo = event.target.files[0];
-      const preview = document.getElementById("previewImagenMascota");
+  inputImagen.addEventListener("change", function (event) {
+    const archivo = event.target.files[0];
 
-      if (!archivo) {
+    if (!archivo) {
+      return;
+    }
+
+    if (!ALLOWED_IMAGE_TYPES.has(archivo.type)) {
+      mostrarAlerta("Seleccioná una imagen JPG, PNG, GIF o WEBP.", "danger");
+      event.target.value = "";
+      return;
+    }
+
+    if (archivo.size > MAX_IMAGE_SIZE) {
+      mostrarAlerta("La imagen no puede superar los 2 MB.", "danger");
+      event.target.value = "";
+      return;
+    }
+
+    leerImagenComoBase64(archivo)
+      .then((resultado) => {
+        imagenBase64 = resultado;
+        actualizarVistaPrevia(imagenBase64);
+      })
+      .catch((error) => {
         imagenBase64 = "";
-        preview.src = "";
-        preview.style.display = "none";
-        return;
+        mostrarAlerta(error.message, "danger");
+        actualizarVistaPrevia("");
+      })
+      .finally(() => {
+        lecturaImagenPendiente = null;
+      });
+  });
+
+  tabla.addEventListener("click", function (event) {
+    const boton = event.target.closest("button[data-accion]");
+
+    if (!boton) {
+      return;
+    }
+
+    if (boton.dataset.accion === "editar") {
+      editarMascota(boton.dataset.idMascota);
+    }
+
+    if (boton.dataset.accion === "eliminar") {
+      eliminarMascotaUI(boton.dataset.idMascota);
+    }
+  });
+
+  formulario.addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    try {
+      if (lecturaImagenPendiente) {
+        imagenBase64 = await lecturaImagenPendiente;
       }
-
-      const reader = new FileReader();
-
-      reader.onload = function (e) {
-        imagenBase64 = e.target.result;
-
-        preview.src = imagenBase64;
-        preview.style.display = "block";
-      };
-
-      reader.readAsDataURL(archivo);
-    });
-
-
-  // ==========================================================
-  // Alta y edición de mascotas
-  // ==========================================================
-
-  document
-    .getElementById("formMascota")
-    .addEventListener("submit", function (event) {
-
-      event.preventDefault();
 
       const idMascota = document.getElementById("idMascota").value;
-      const nombreMascota =
-        document.getElementById("nombreMascota").value.trim();
-      const nombreDuenio =
-        document.getElementById("nombreDuenio").value.trim();
-      const color =
-        document.getElementById("color").value.trim();
-      const edad =
-        Number(document.getElementById("edad").value);
-      const peso =
-        Number(document.getElementById("peso").value);
+      const nombreMascota = document
+        .getElementById("nombreMascota")
+        .value.trim();
+      const nombreDuenio = document.getElementById("nombreDuenio").value.trim();
+      const color = document.getElementById("color").value.trim();
+      const edadTexto = document.getElementById("edad").value;
+      const pesoTexto = document.getElementById("peso").value;
+      const edad = Number(edadTexto);
+      const peso = Number(pesoTexto);
 
-      if (!nombreMascota || !nombreDuenio || !color) {
+      if (
+        !nombreMascota ||
+        !nombreDuenio ||
+        !color ||
+        !edadTexto ||
+        !pesoTexto
+      ) {
+        mostrarAlerta("Completá todos los campos obligatorios.", "danger");
+        return;
+      }
+
+      if (!Number.isInteger(edad) || edad < 0) {
         mostrarAlerta(
-          "Completá todos los campos obligatorios.",
-          "danger"
+          "La edad debe ser un número entero mayor o igual a cero.",
+          "danger",
         );
         return;
       }
 
-      if (!esNumeroPositivo(edad) && edad !== 0) {
-        mostrarAlerta(
-          "La edad debe ser un número válido.",
-          "danger"
-        );
-        return;
-      }
-
-      if (!esNumeroPositivo(peso)) {
-        mostrarAlerta(
-          "El peso debe ser un número positivo.",
-          "danger"
-        );
+      if (!Number.isFinite(peso) || peso <= 0) {
+        mostrarAlerta("El peso debe ser un número decimal positivo.", "danger");
         return;
       }
 
       const mascotas = obtenerMascotas();
 
-
-      // ========================================================
-      // EDICIÓN
-      // ========================================================
-
       if (idMascota) {
+        const mascota = mascotas.find((item) => item.idMascota === idMascota);
 
-        const indice = mascotas.findIndex(
-          (mascota) => mascota.idMascota === idMascota
-        );
-
-        if (indice === -1) {
-          mostrarAlerta(
-            "No se encontró la mascota.",
-            "danger"
-          );
+        if (!mascota) {
+          mostrarAlerta("No se encontró la mascota.", "danger");
           return;
         }
 
-        mascotas[indice].nombreMascota = nombreMascota;
-        mascotas[indice].nombreDuenio = nombreDuenio;
-        mascotas[indice].color = color;
-        mascotas[indice].edad = edad;
-        mascotas[indice].peso = peso;
-
-        if (imagenBase64) {
-          mascotas[indice].imagenMascota = imagenBase64;
-        }
-
-        guardarMascotas(mascotas);
-
-        mostrarAlerta(
-          "Mascota modificada correctamente.",
-          "success"
-        );
+        Object.assign(mascota, {
+          nombreMascota,
+          nombreDuenio,
+          color,
+          edad,
+          peso,
+          imagenMascota: imagenBase64,
+        });
+        mostrarAlerta("Mascota modificada correctamente.", "success");
+      } else {
+        mascotas.push({
+          idMascota: crearIdMascotaUnico(mascotas),
+          nombreMascota,
+          nombreDuenio,
+          color,
+          edad,
+          peso,
+          imagenMascota: imagenBase64,
+        });
+        mostrarAlerta("Mascota registrada correctamente.", "success");
       }
 
-
-      // ========================================================
-      // ALTA
-      // ========================================================
-
-      else {
-
-        const nuevaMascota = {
-          idMascota: generarUID(),
-          nombreMascota: nombreMascota,
-          nombreDuenio: nombreDuenio,
-          color: color,
-          edad: edad,
-          peso: peso,
-          imagenMascota: imagenBase64
-        };
-
-        mascotas.push(nuevaMascota);
-
-        guardarMascotas(mascotas);
-
-        mostrarAlerta(
-          "Mascota registrada correctamente.",
-          "success"
-        );
-      }
-
-
+      guardarMascotas(mascotas);
       renderizarTablaMascotas();
-
-
-      // Limpiar formulario
-
-      document
-        .getElementById("formMascota")
-        .reset();
-
-      document
-        .getElementById("idMascota")
-        .value = "";
-
-      imagenBase64 = "";
-
-
-      // Cerrar modal
-
-      const modal = bootstrap.Modal.getInstance(
-        document.getElementById("modalMascota")
+      prepararNuevaMascota();
+      bootstrap.Modal.getInstance(modalMascota)?.hide();
+    } catch (error) {
+      mostrarAlerta(
+        error.message || "No se pudo guardar la mascota.",
+        "danger",
       );
+    }
+  });
 
-      if (modal) {
-        modal.hide();
-      }
-
-    });
-
-
-  // ==========================================================
-  // Renderizar tabla al cargar
-  // ==========================================================
-
+  modalMascota.addEventListener("hidden.bs.modal", prepararNuevaMascota);
   renderizarTablaMascotas();
-
 });
