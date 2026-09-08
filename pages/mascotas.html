@@ -110,13 +110,6 @@
                 </tr>
               </thead>
 
-              <!--
-                TODO (encargado/a de Mascotas): en js/mascotas.js
-                implementar renderizarTablaMascotas() que recorra
-                obtenerMascotas() e inserte las filas <tr>, con botones
-                que llamen a editarMascota(id) y eliminarMascotaUI(id).
-                Para la foto, usar imagenMascota (Base64) en un <img>.
-              -->
               <tbody id="tablaMascotas">
                 <tr>
                   <td colspan="7" class="text-center text-muted">
@@ -200,17 +193,23 @@
 
               <div class="mb-3">
                 <label for="imagenMascota" class="form-label"> Imagen </label>
-                <!--
-                  TODO (encargado/a de Mascotas): al seleccionar el
-                  archivo, convertirlo a Base64 con FileReader y guardarlo
-                  en el campo imagenMascota del objeto mascota.
-                -->
+            
                 <input
                   type="file"
                   id="imagenMascota"
                   class="form-control"
                   accept="image/*"
                 />
+
+                <div class="mt-3 text-center">
+                  <img
+                    id="previewImagenMascota"
+                    src=""
+                    alt="Vista previa de la mascota"
+                    class="img-fluid rounded"
+                    style="max-width: 200px; max-height: 200px; display: none;"
+                  />
+                </div>
               </div>
             </div>
 
