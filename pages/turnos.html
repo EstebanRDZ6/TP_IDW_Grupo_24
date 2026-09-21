@@ -93,11 +93,21 @@
             </div>
           </div>
 
-          <!--
-            TODO (encargado/a de Turnos): agregar filtros por veterinario
-            y por fecha arriba de la tabla, para facilitar la búsqueda
-            del turno más adecuado (pedido en el enunciado).
-          -->
+          <div class="d-flex flex-wrap gap-3 mb-3">
+            <div>
+              <label for="filtroVeterinarioTurno" class="form-label">
+                Veterinario
+              </label>
+              <select id="filtroVeterinarioTurno" class="form-select">
+                <option value="">Todos los veterinarios</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="filtroFechaTurno" class="form-label">Fecha</label>
+              <input type="date" id="filtroFechaTurno" class="form-control" />
+            </div>
+          </div>
 
           <div class="table-container p-3">
             <table class="table align-middle mb-0">
@@ -111,14 +121,6 @@
                 </tr>
               </thead>
 
-              <!--
-                TODO (encargado/a de Turnos): en js/turnos.js implementar
-                renderizarTablaTurnos() que recorra obtenerTurnos(),
-                resuelva mascota/veterinario con buscarMascotaPorId() y
-                buscarVeterinarioPorId(), y agregue botones para eliminar
-                el turno y generar el comprobante en PDF con
-                generarComprobantePDF(turno) (definida en js/reportes.js).
-              -->
               <tbody id="tablaTurnos">
                 <tr>
                   <td colspan="5" class="text-center text-muted">
@@ -161,10 +163,6 @@
 
               <div class="mb-3">
                 <label for="mascotaTurno" class="form-label">Mascota</label>
-                <!--
-                  TODO (encargado/a de Turnos): completar este <select>
-                  dinámicamente con obtenerMascotas().
-                -->
                 <select id="mascotaTurno" class="form-select" required>
                   <option value="">Seleccionar mascota...</option>
                 </select>
@@ -174,11 +172,6 @@
                 <label for="veterinarioTurno" class="form-label">
                   Veterinario
                 </label>
-                <!--
-                  TODO (encargado/a de Turnos): completar este <select>
-                  dinámicamente con obtenerVeterinarios(). El valor de la
-                  consulta se toma del veterinario seleccionado.
-                -->
                 <select id="veterinarioTurno" class="form-select" required>
                   <option value="">Seleccionar veterinario...</option>
                 </select>
@@ -207,6 +200,7 @@
     <script src="../js/auth.js"></script>
     <script src="../js/utils.js"></script>
     <script src="../js/exportaciones.js"></script>
+    <script src="../js/api.js"></script>
     <script src="../js/reportes.js"></script>
     <script src="../js/turnos.js"></script>
 

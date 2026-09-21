@@ -61,8 +61,14 @@ utilizando la API LocalStorage del navegador.
 
 ## API REST
 
-La aplicación consume una API REST externa mediante
-la API Fetch de JavaScript.
+La aplicación consume la API REST pública **Nager.Date**
+(https://date.nager.at) mediante la API Fetch de JavaScript.
+
+Desde el módulo de turnos (`js/turnos.js`, configuración en
+`js/api.js`) se consultan los feriados de Argentina. Al agendar un
+turno en una fecha que coincide con un feriado nacional, el sistema
+muestra una advertencia y pide confirmación antes de registrarlo. Si la
+API no responde, la agenda no se bloquea.
 
 ## Estructura del proyecto
 
@@ -107,7 +113,7 @@ TP_IDW_Grupo_24/
 
 Arquitectura base, autenticación, integración con LocalStorage y las
 funcionalidades opcionales de exportación (`js/exportaciones.js`) y
-comprobante en PDF (`js/reportes.js`) ya están resueltas por 
+comprobante en PDF (`js/reportes.js`) ya están resueltas por
 (**Esteban Samuel Rodriguez**), junto con las páginas
 públicas (`index.html`, `pages/institucional.html`,
 `pages/contacto.html`) y el armado de todas las páginas de
@@ -126,12 +132,12 @@ los comentarios guía dentro de cada uno:
 
 - **Esteban Samuel Rodriguez y Emilse Daniela Pufal** — Turnos e
   Historia Clínica (`js/turnos.js` y `js/historia-clinica.js`):
-  alta/baja de turnos en `pages/turnos.html` (con generación de
-  comprobante en PDF ya disponible), registro de historia clínica y
-  visualización del historial por mascota en
+  alta/baja de turnos en `pages/turnos.html` con filtros por
+  veterinario y fecha, generación de comprobante en PDF, registro de
+  historia clínica y visualización del historial por mascota en
   `pages/historia-clinica.html`, y consumo de la API REST externa
-  (`js/api.js`) para incorporar un dato adicional relacionado a estos
-  módulos.
+  (`js/api.js`) de feriados de Argentina para advertir al agendar un
+  turno en un feriado.
 
 Cada módulo puede probarse de forma independiente entrando directamente
 a su página, ya que la sesión de administrador y el almacenamiento ya
