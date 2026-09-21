@@ -72,6 +72,10 @@ function completarFiltroMascota() {
 
 function renderizarTablaHistorias() {
   const filtroMascota = document.getElementById("filtroMascotaHistoria").value;
+  const inputBusqueda = document.getElementById("buscarMascotaHistoria");
+  const textoBusqueda = inputBusqueda
+    ? inputBusqueda.value.trim().toLowerCase()
+    : "";
   const tabla = document.getElementById("tablaHistorias");
 
   let historias = obtenerHistoriasClinicas();
@@ -80,6 +84,17 @@ function renderizarTablaHistorias() {
     historias = historias.filter(
       (historia) => historia.mascota === filtroMascota,
     );
+  }
+
+  if (textoBusqueda) {
+    historias = historias.filter((historia) => {
+      const mascota = buscarMascotaPorId(historia.mascota);
+
+      return (
+        mascota &&
+        mascota.nombreMascota.toLowerCase().includes(textoBusqueda)
+      );
+    });
   }
 
   historias.sort((a, b) => new Date(b.fechaHora) - new Date(a.fechaHora));
@@ -92,7 +107,9 @@ function renderizarTablaHistorias() {
 
     celda.colSpan = 8;
     celda.className = "text-center text-muted";
-    celda.textContent = "No hay historias clínicas registradas.";
+    celda.textContent = textoBusqueda
+      ? "No se encontraron historias para ese nombre de mascota."
+      : "No hay historias clínicas registradas.";
     fila.append(celda);
     tabla.append(fila);
     return;
@@ -175,10 +192,12 @@ document.addEventListener("DOMContentLoaded", function () {
   const tabla = document.getElementById("tablaHistorias");
   const botonNuevaHistoria = document.getElementById("btnNuevaHistoria");
   const filtroMascota = document.getElementById("filtroMascotaHistoria");
+  const inputBusqueda = document.getElementById("buscarMascotaHistoria");
 
   botonNuevaHistoria.addEventListener("click", prepararNuevaHistoria);
 
   filtroMascota.addEventListener("change", renderizarTablaHistorias);
+  inputBusqueda.addEventListener("input", renderizarTablaHistorias);
 
   tabla.addEventListener("click", function (event) {
     const boton = event.target.closest("button[data-id-historia]");

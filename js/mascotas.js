@@ -53,7 +53,19 @@ function actualizarVistaPrevia(imagen) {
 }
 
 function renderizarTablaMascotas() {
-  const mascotas = obtenerMascotas();
+  const inputBusqueda = document.getElementById("buscarMascota");
+  const textoBusqueda = inputBusqueda
+    ? inputBusqueda.value.trim().toLowerCase()
+    : "";
+
+  let mascotas = obtenerMascotas();
+
+  if (textoBusqueda) {
+    mascotas = mascotas.filter((mascota) =>
+      mascota.nombreMascota.toLowerCase().includes(textoBusqueda),
+    );
+  }
+
   const tabla = document.getElementById("tablaMascotas");
 
   if (!tabla) {
@@ -68,7 +80,9 @@ function renderizarTablaMascotas() {
 
     celda.colSpan = 7;
     celda.className = "text-center text-muted";
-    celda.textContent = "No hay mascotas registradas.";
+    celda.textContent = textoBusqueda
+      ? "No se encontraron mascotas con ese nombre."
+      : "No hay mascotas registradas.";
     fila.append(celda);
     tabla.append(fila);
     return;
@@ -202,6 +216,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const inputImagen = document.getElementById("imagenMascota");
   const tabla = document.getElementById("tablaMascotas");
   const botonNuevaMascota = document.getElementById("btnNuevaMascota");
+  const inputBusqueda = document.getElementById("buscarMascota");
+
+  if (inputBusqueda) {
+    inputBusqueda.addEventListener("input", renderizarTablaMascotas);
+  }
   const modalMascota = document.getElementById("modalMascota");
 
   botonNuevaMascota.addEventListener("click", prepararNuevaMascota);

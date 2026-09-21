@@ -5,7 +5,6 @@ Trabajo Final Integrador - IDW Grupo 24
 ## Integrantes
 
 - Esteban Samuel Rodriguez
-- Emilse Daniela Pufal
 - Leonardo Maciel
 - Oscar Godoy
 
@@ -111,17 +110,17 @@ TP_IDW_Grupo_24/
 
 ## Distribución de tareas
 
-Arquitectura base, autenticación, integración con LocalStorage y las
-funcionalidades opcionales de exportación (`js/exportaciones.js`) y
-comprobante en PDF (`js/reportes.js`) ya están resueltas por
-(**Esteban Samuel Rodriguez**), junto con las páginas
-públicas (`index.html`, `pages/institucional.html`,
-`pages/contacto.html`) y el armado de todas las páginas de
-administración (tablas, formularios y modales en `pages/`).
-
-Cada módulo restante ya tiene su página administrativa lista. Falta
-completar la lógica en el archivo JavaScript correspondiente, siguiendo
-los comentarios guía dentro de cada uno:
+- **Esteban Samuel Rodriguez** — Arquitectura base, autenticación,
+  integración con LocalStorage, páginas públicas (`index.html`,
+  `pages/institucional.html`, `pages/contacto.html`), armado de las
+  páginas de administración, funcionalidades opcionales de exportación
+  (`js/exportaciones.js`) y comprobante en PDF (`js/reportes.js`), y
+  módulo de Turnos e Historia Clínica (`js/turnos.js` y
+  `js/historia-clinica.js`): alta/baja de turnos con filtros por
+  veterinario y fecha, registro de historia clínica y visualización del
+  historial por mascota, y consumo de la API REST externa (`js/api.js`)
+  de feriados de Argentina para advertir al agendar un turno en un
+  feriado.
 
 - **Oscar Godoy** — Veterinarios (`js/veterinarios.js`): listado
   público de profesionales en la portada (`index.html`) y CRUD completo
@@ -130,15 +129,7 @@ los comentarios guía dentro de cada uno:
 - **Leonardo Maciel** — Mascotas (`js/mascotas.js`): CRUD completo en
   `pages/mascotas.html`, incluida la carga de imagen en Base64.
 
-- **Esteban Samuel Rodriguez y Emilse Daniela Pufal** — Turnos e
-  Historia Clínica (`js/turnos.js` y `js/historia-clinica.js`):
-  alta/baja de turnos en `pages/turnos.html` con filtros por
-  veterinario y fecha, generación de comprobante en PDF, registro de
-  historia clínica y visualización del historial por mascota en
-  `pages/historia-clinica.html`, y consumo de la API REST externa
-  (`js/api.js`) de feriados de Argentina para advertir al agendar un
-  turno en un feriado.
+## Estado del proyecto
 
-Cada módulo puede probarse de forma independiente entrando directamente
-a su página, ya que la sesión de administrador y el almacenamiento ya
-están resueltos.
+Todos los módulos y requerimientos obligatorios están implementados y
+probados. El proyecto está listo para su entrega.
