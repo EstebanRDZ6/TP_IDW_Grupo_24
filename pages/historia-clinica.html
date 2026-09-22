@@ -96,13 +96,27 @@
             </div>
           </div>
 
-          <div class="mb-3">
-            <label for="filtroMascotaHistoria" class="form-label">
-              Ver historial de:
-            </label>
-            <select id="filtroMascotaHistoria" class="form-select w-auto">
-              <option value="">Todas las mascotas</option>
-            </select>
+          <div class="d-flex flex-wrap gap-3 mb-3 align-items-end">
+            <div>
+              <label for="filtroMascotaHistoria" class="form-label">
+                Ver historial de:
+              </label>
+              <select id="filtroMascotaHistoria" class="form-select w-auto">
+                <option value="">Todas las mascotas</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="buscarMascotaHistoria" class="form-label">
+                Buscar por nombre
+              </label>
+              <input
+                type="search"
+                id="buscarMascotaHistoria"
+                class="form-control"
+                placeholder="Nombre de la mascota..."
+              />
+            </div>
           </div>
 
           <div class="table-container p-3">
