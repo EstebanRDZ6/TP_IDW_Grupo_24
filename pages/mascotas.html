@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../js/tema.js"></script>
   </head>
 
   <body>
@@ -60,6 +61,11 @@
 
             <hr />
 
+            <button id="btnTema" class="btn btn-outline-light w-100 mb-2 theme-toggle" type="button">
+              <i class="bi bi-moon"></i>
+              Modo oscuro
+            </button>
+
             <button id="btnCerrarSesion" class="btn btn-outline-light w-100">
               <i class="bi bi-box-arrow-left"></i>
               Cerrar sesión
@@ -94,6 +100,18 @@
                 Nueva mascota
               </button>
             </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="buscarMascota" class="form-label">
+              Buscar por nombre
+            </label>
+            <input
+              type="search"
+              id="buscarMascota"
+              class="form-control"
+              placeholder="Nombre de la mascota..."
+            />
           </div>
 
           <div class="table-container p-3">

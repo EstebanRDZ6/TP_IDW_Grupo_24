@@ -15,6 +15,7 @@
       rel="stylesheet"
     />
     <link rel="stylesheet" href="../css/styles.css" />
+    <script src="../js/tema.js"></script>
   </head>
 
   <body>
@@ -59,6 +60,11 @@
             </nav>
 
             <hr />
+
+            <button id="btnTema" class="btn btn-outline-light w-100 mb-2 theme-toggle" type="button">
+              <i class="bi bi-moon"></i>
+              Modo oscuro
+            </button>
 
             <button id="btnCerrarSesion" class="btn btn-outline-light w-100">
               <i class="bi bi-box-arrow-left"></i>
@@ -108,13 +114,6 @@
                 </tr>
               </thead>
 
-              <!--
-                TODO (encargado/a de Veterinarios): en js/veterinarios.js
-                implementar renderizarTablaVeterinarios() que recorra
-                obtenerVeterinarios() e inserte las filas <tr> acá dentro,
-                con botones de editar/eliminar que llamen a
-                editarVeterinario(id) y eliminarVeterinarioUI(id).
-              -->
               <tbody id="tablaVeterinarios">
                 <tr>
                   <td colspan="5" class="text-center text-muted">
