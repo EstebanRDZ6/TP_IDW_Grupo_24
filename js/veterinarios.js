@@ -83,61 +83,78 @@ function renderizarTablaVeterinarios() {
     return;
   }
 
-  const veterinarios = obtenerVeterinarios();
+  const inputBusqueda = document.getElementById("buscarVeterinario");
+  const textoBusqueda = inputBusqueda
+    ? inputBusqueda.value.trim().toLowerCase()
+    : "";
+  const veterinarios = obtenerVeterinarios().filter((veterinario) =>
+    [
+      veterinario.matricula,
+      veterinario.nombre,
+      veterinario.especializacion,
+    ].some((dato) => String(dato).toLowerCase().includes(textoBusqueda)),
+  );
 
   if (veterinarios.length === 0) {
-    tabla.innerHTML = `
-      <tr>
-        <td colspan="5" class="text-center text-muted">
-          No hay veterinarios registrados.
-        </td>
-      </tr>
-    `;
-
+    const fila = document.createElement("tr");
+    const celda = document.createElement("td");
+    celda.colSpan = 5;
+    celda.className = "text-center text-muted";
+    celda.textContent = textoBusqueda
+      ? "No se encontraron veterinarios."
+      : "No hay veterinarios registrados.";
+    fila.append(celda);
+    tabla.replaceChildren(fila);
     return;
   }
 
-  tabla.innerHTML = veterinarios
-    .map(
-      (veterinario) => `
-        <tr>
-          <td>${veterinario.matricula}</td>
+  const filas = veterinarios.map((veterinario) => {
+    const fila = document.createElement("tr");
+    const matriculaCelda = document.createElement("td");
+    const nombreCelda = document.createElement("td");
+    const especializacionCelda = document.createElement("td");
+    const valorCelda = document.createElement("td");
+    const accionesCelda = document.createElement("td");
+    const editar = document.createElement("button");
+    const eliminar = document.createElement("button");
+    const iconoEditar = document.createElement("i");
+    const iconoEliminar = document.createElement("i");
 
-          <td>
-            ${escaparHTML(veterinario.nombre)}
-          </td>
+    matriculaCelda.textContent = String(veterinario.matricula);
+    nombreCelda.textContent = veterinario.nombre;
+    especializacionCelda.textContent = veterinario.especializacion;
+    valorCelda.textContent = formatearMoneda(veterinario.valorConsulta);
 
-          <td>
-            ${escaparHTML(veterinario.especializacion)}
-          </td>
+    editar.type = "button";
+    editar.className = "btn btn-sm btn-outline-primary me-1";
+    editar.dataset.accion = "editar";
+    editar.dataset.idVeterinario = veterinario.idVeterinario;
+    iconoEditar.className = "bi bi-pencil me-1";
+    iconoEditar.setAttribute("aria-hidden", "true");
+    editar.append(iconoEditar, document.createTextNode("Editar"));
 
-          <td>
-            ${formatearMoneda(veterinario.valorConsulta)}
-          </td>
+    eliminar.type = "button";
+    eliminar.className = "btn btn-sm btn-outline-danger";
+    eliminar.dataset.accion = "eliminar";
+    eliminar.dataset.idVeterinario = veterinario.idVeterinario;
+    iconoEliminar.className = "bi bi-trash me-1";
+    iconoEliminar.setAttribute("aria-hidden", "true");
+    eliminar.append(iconoEliminar, document.createTextNode("Eliminar"));
 
-          <td class="text-end">
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-primary me-1"
-              onclick="editarVeterinario('${veterinario.idVeterinario}')"
-            >
-              <i class="bi bi-pencil"></i>
-              Editar
-            </button>
+    accionesCelda.className = "text-end";
+    accionesCelda.append(editar, eliminar);
+    fila.append(
+      matriculaCelda,
+      nombreCelda,
+      especializacionCelda,
+      valorCelda,
+      accionesCelda,
+    );
 
-            <button
-              type="button"
-              class="btn btn-sm btn-outline-danger"
-              onclick="eliminarVeterinarioUI('${veterinario.idVeterinario}')"
-            >
-              <i class="bi bi-trash"></i>
-              Eliminar
-            </button>
-          </td>
-        </tr>
-      `,
-    )
-    .join("");
+    return fila;
+  });
+
+  tabla.replaceChildren(...filas);
 }
 
 /* =========================================================
@@ -223,9 +240,38 @@ document.addEventListener("DOMContentLoaded", function () {
   const btnNuevoVeterinario =
     document.getElementById("btnNuevoVeterinario");
 
+  const inputBusqueda =
+    document.getElementById("buscarVeterinario");
+
+  if (inputBusqueda) {
+    inputBusqueda.addEventListener("input", renderizarTablaVeterinarios);
+  }
+
   /* Listado administrativo */
   if (tablaVeterinarios) {
     renderizarTablaVeterinarios();
+
+    tablaVeterinarios.addEventListener("click", function (event) {
+      const objetivo = event.target;
+
+      if (!(objetivo instanceof Element)) {
+        return;
+      }
+
+      const boton = objetivo.closest("button[data-accion]");
+
+      if (!boton) {
+        return;
+      }
+
+      if (boton.dataset.accion === "editar") {
+        editarVeterinario(boton.dataset.idVeterinario);
+      }
+
+      if (boton.dataset.accion === "eliminar") {
+        eliminarVeterinarioUI(boton.dataset.idVeterinario);
+      }
+    });
   }
 
   /* Listado público */
@@ -266,9 +312,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         /* Validaciones */
 
-        if (!esNumeroPositivo(matricula)) {
+        if (!Number.isInteger(matricula) || matricula <= 0) {
           mostrarAlerta(
-            "La matrícula debe ser un número positivo.",
+            "La matrícula debe ser un número entero positivo.",
             "danger"
           );
           return;
