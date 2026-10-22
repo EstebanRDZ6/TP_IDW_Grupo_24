@@ -58,13 +58,18 @@ function renderizarTablaMascotas() {
     ? inputBusqueda.value.trim().toLowerCase()
     : "";
 
-  let mascotas = obtenerMascotas();
+  const todasLasMascotas = obtenerMascotas();
+  const totalMascotas = document.getElementById("totalMascotas");
 
-  if (textoBusqueda) {
-    mascotas = mascotas.filter((mascota) =>
-      mascota.nombreMascota.toLowerCase().includes(textoBusqueda),
-    );
+  if (totalMascotas) {
+    totalMascotas.textContent = `Total de mascotas registradas: ${todasLasMascotas.length}`;
   }
+
+  const mascotas = textoBusqueda
+    ? todasLasMascotas.filter((mascota) =>
+        mascota.nombreMascota.toLowerCase().includes(textoBusqueda),
+      )
+    : todasLasMascotas;
 
   const tabla = document.getElementById("tablaMascotas");
 
