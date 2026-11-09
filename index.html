@@ -64,6 +64,14 @@
                 <a class="nav-link" href="pages/contacto.html"> Contacto </a>
               </li>
 
+              <!-- Opciones administrativas - Solo si hay sesión -->
+              <li class="nav-item" id="menuAdminOptions" style="display: none;">
+                <a class="nav-link" href="pages/dashboard.html">
+                  <i class="bi bi-speedometer2"></i>
+                  Panel Administrativo
+                </a>
+              </li>
+
               <li class="nav-item">
                 <button
                   id="btnTema"
@@ -75,10 +83,19 @@
                 </button>
               </li>
 
-              <li class="nav-item">
+              <!-- Botón Login / Cerrar Sesión -->
+              <li class="nav-item" id="menuLogin">
                 <a class="btn btn-primary ms-lg-2" href="pages/login.html">
+                  <i class="bi bi-box-arrow-in-right"></i>
                   Administrador
                 </a>
+              </li>
+
+              <li class="nav-item" id="menuLogout" style="display: none;">
+                <button class="btn btn-danger ms-lg-2" id="btnCerrarSesionNav">
+                  <i class="bi bi-box-arrow-left"></i>
+                  Cerrar sesión
+                </button>
               </li>
             </ul>
           </div>
@@ -176,7 +193,41 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="js/storage.js"></script>
+    <script src="js/auth.js"></script>
     <script src="js/utils.js"></script>
+    <script src="js/tema.js"></script>
     <script src="js/veterinarios.js"></script>
+
+    <script>
+      // Actualizar visibilidad de menú según autenticación
+      function actualizarMenuNav() {
+        const menuLogin = document.getElementById("menuLogin");
+        const menuLogout = document.getElementById("menuLogout");
+        const menuAdminOptions = document.getElementById("menuAdminOptions");
+        const btnCerrarSesionNav = document.getElementById("btnCerrarSesionNav");
+
+        if (estaAutenticado()) {
+          // Usuario autenticado
+          menuLogin.style.display = "none";
+          menuLogout.style.display = "block";
+          menuAdminOptions.style.display = "block";
+
+          if (btnCerrarSesionNav) {
+            btnCerrarSesionNav.addEventListener("click", cerrarSesion);
+          }
+        } else {
+          // Usuario no autenticado
+          menuLogin.style.display = "block";
+          menuLogout.style.display = "none";
+          menuAdminOptions.style.display = "none";
+        }
+      }
+
+      // Ejecutar al cargar la página
+      document.addEventListener("DOMContentLoaded", actualizarMenuNav);
+
+      // Actualizar cada vez que se obtiene foco (vuelve de otra pestaña)
+      window.addEventListener("focus", actualizarMenuNav);
+    </script>
   </body>
 </html>
