@@ -1,61 +1,66 @@
 /**
- * Autenticación del administrador.
+ * Autenticación contra DummyJSON.
  *
- * IMPORTANTE:
- * Esta autenticación es solamente demostrativa
- * y se ejecuta del lado cliente.
+ * Autentica usuarios contra la API pública DummyJSON.
+ * El token recibido se almacena en sessionStorage.
  */
-
-const ADMIN_CREDENTIALS = {
-  usuario: "admin",
-  password: "admin123",
-};
 
 /**
- * Inicia sesión.
+ * Inicia sesión contra DummyJSON.
  *
- * @param {string} usuario
- * @param {string} password
- * @returns {boolean}
+ * @param {string} usuario - Username para DummyJSON (ej: "emilys")
+ * @param {string} password - Contraseña (ej: "emilyspass")
+ * @returns {Promise<boolean>}
  */
-function iniciarSesion(usuario, password) {
-  if (
-    usuario === ADMIN_CREDENTIALS.usuario &&
-    password === ADMIN_CREDENTIALS.password
-  ) {
-    const sesion = {
-      usuario: usuario,
-      rol: "administrador",
-      fechaInicio: new Date().toISOString(),
-    };
+async function iniciarSesion(usuario, password) {
+  try {
+    const response = await fetch("https://dummyjson.com/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: usuario,
+        password: password,
+      }),
+    });
 
-    localStorage.setItem(STORAGE_KEYS.SESION, JSON.stringify(sesion));
+    if (!response.ok) {
+      console.warn("Credenciales inválidas:", response.status);
+      return false;
+    }
+
+    const datos = await response.json();
+
+    sessionStorage.setItem("token", datos.token);
+    sessionStorage.setItem("usuario", datos.username);
+    sessionStorage.setItem("usuarioId", datos.id);
 
     return true;
+  } catch (error) {
+    console.error("Error al conectar con DummyJSON:", error);
+    return false;
   }
-
-  return false;
 }
 
 /**
- * Obtiene la sesión actual.
+ * Obtiene la sesión actual desde sessionStorage.
  *
  * @returns {Object|null}
  */
 function obtenerSesion() {
-  const sesion = localStorage.getItem(STORAGE_KEYS.SESION);
+  const token = sessionStorage.getItem("token");
+  const usuario = sessionStorage.getItem("usuario");
 
-  if (!sesion) {
+  if (!token || !usuario) {
     return null;
   }
 
-  try {
-    return JSON.parse(sesion);
-  } catch (error) {
-    console.error("Error al leer la sesión:", error);
-
-    return null;
-  }
+  return {
+    usuario: usuario,
+    token: token,
+    rol: "administrador",
+  };
 }
 
 /**
@@ -82,7 +87,29 @@ function protegerPagina() {
  * Cierra la sesión.
  */
 function cerrarSesion() {
+  sessionStorage.removeItem("token");
+  sessionStorage.removeItem("usuario");
+  sessionStorage.removeItem("usuarioId");
+
   localStorage.removeItem(STORAGE_KEYS.SESION);
 
   window.location.href = "login.html";
+}
+
+/**
+ * Obtiene los headers HTTP con autenticación.
+ *
+ * @returns {Object}
+ */
+function obtenerHeadersConAuth() {
+  const token = sessionStorage.getItem("token");
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  return headers;
 }

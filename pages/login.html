@@ -62,6 +62,7 @@
                   class="form-control"
                   required
                   autocomplete="username"
+                  placeholder="ej: emilys"
                 />
               </div>
 
@@ -75,6 +76,7 @@
                   class="form-control"
                   required
                   autocomplete="current-password"
+                  placeholder="ej: emilyspass"
                 />
               </div>
 
@@ -83,16 +85,21 @@
                 class="alert alert-danger d-none"
                 role="alert"
               >
-                Usuario o contraseña incorrectos.
+                <span id="loginErrorText">Usuario o contraseña incorrectos.</span>
               </div>
 
-              <button type="submit" class="btn btn-primary w-100">
+              <button type="submit" class="btn btn-primary w-100" id="btnLogin">
                 <i class="bi bi-box-arrow-in-right"></i>
                 Iniciar sesión
               </button>
+
+              <div id="spinner" class="spinner-border d-none mt-3" role="status">
+                <span class="visually-hidden">Cargando...</span>
+              </div>
             </form>
 
             <div class="text-center mt-4">
+              <p class="small text-muted">Prueba: emilys / emilyspass</p>
               <a href="../index.html"> Volver al sitio </a>
             </div>
           </div>
@@ -108,15 +115,25 @@
       const loginForm = document.getElementById("loginForm");
 
       const loginError = document.getElementById("loginError");
+      const loginErrorText = document.getElementById("loginErrorText");
+      const btnLogin = document.getElementById("btnLogin");
+      const spinner = document.getElementById("spinner");
 
-      loginForm.addEventListener("submit", function (event) {
+      loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
         const usuario = document.getElementById("usuario").value.trim();
 
         const password = document.getElementById("password").value;
 
-        const resultado = iniciarSesion(usuario, password);
+        btnLogin.disabled = true;
+        spinner.classList.remove("d-none");
+        loginError.classList.add("d-none");
+
+        const resultado = await iniciarSesion(usuario, password);
+
+        btnLogin.disabled = false;
+        spinner.classList.add("d-none");
 
         if (resultado) {
           window.location.href = "dashboard.html";
@@ -124,6 +141,7 @@
           return;
         }
 
+        loginErrorText.textContent = "Usuario o contraseña incorrectos.";
         loginError.classList.remove("d-none");
       });
     </script>

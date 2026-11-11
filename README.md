@@ -60,14 +60,23 @@ utilizando la API LocalStorage del navegador.
 
 ## API REST
 
-La aplicación consume la API REST pública **Nager.Date**
-(https://date.nager.at) mediante la API Fetch de JavaScript.
+La aplicación consume dos APIs REST públicas mediante la API Fetch de JavaScript:
 
-Desde el módulo de turnos (`js/turnos.js`, configuración en
-`js/api.js`) se consultan los feriados de Argentina. Al agendar un
-turno en una fecha que coincide con un feriado nacional, el sistema
-muestra una advertencia y pide confirmación antes de registrarlo. Si la
-API no responde, la agenda no se bloquea.
+**1. DummyJSON** (https://dummyjson.com/docs/auth)
+
+El sistema de autenticación del administrador se integra con la API de autenticación
+de DummyJSON. Al iniciar sesión, el servidor valida las credenciales y retorna un
+token que se almacena en `sessionStorage`. El token permite acceder a las páginas
+del panel administrativo de forma segura. Si el usuario intenta acceder
+directamente a una página admin sin haber iniciado sesión, es redirigido automáticamente
+a la página de login.
+
+**2. Nager.Date** (https://date.nager.at)
+
+Desde el módulo de turnos (`js/turnos.js`, configuración en `js/api.js`) se
+consultan los feriados de Argentina. Al agendar un turno en una fecha que
+coincide con un feriado nacional, el sistema muestra una advertencia y pide
+confirmación antes de registrarlo. Si la API no responde, la agenda no se bloquea.
 
 ## Estructura del proyecto
 
@@ -110,17 +119,18 @@ TP_IDW_Grupo_24/
 
 ## Distribución de tareas
 
-- **Esteban Samuel Rodriguez** — Arquitectura base, autenticación,
+- **Esteban Samuel Rodriguez** — Arquitectura base, autenticación contra la API DummyJSON
+  con manejo de tokens en sessionStorage y protección de páginas administrativas,
   integración con LocalStorage, páginas públicas (`index.html`,
   `pages/institucional.html`, `pages/contacto.html`), armado de las
   páginas de administración, funcionalidades opcionales de exportación
-  (`js/exportaciones.js`) y comprobante en PDF (`js/reportes.js`), y
-  módulo de Turnos e Historia Clínica (`js/turnos.js` y
-  `js/historia-clinica.js`): alta/baja de turnos con filtros por
-  veterinario y fecha, registro de historia clínica y visualización del
-  historial por mascota, y consumo de la API REST externa (`js/api.js`)
-  de feriados de Argentina para advertir al agendar un turno en un
-  feriado.
+  (`js/exportaciones.js`) y comprobante en PDF (`js/reportes.js`), módulo
+  de Turnos e Historia Clínica (`js/turnos.js` y `js/historia-clinica.js`):
+  alta/baja de turnos con filtros por veterinario y fecha, registro de
+  historia clínica y visualización del historial por mascota, consumo de
+  la API REST externa (`js/api.js`) de feriados de Argentina para advertir
+  al agendar un turno en un feriado, y menú dinámico en la navbar que
+  muestra/oculta opciones administrativas según si hay sesión iniciada.
 
 - **Oscar Godoy** — Veterinarios (`js/veterinarios.js`): listado
   público de profesionales en la portada (`index.html`) y CRUD completo
